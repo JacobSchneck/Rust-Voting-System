@@ -1,4 +1,4 @@
-DROP TABLE voters;
+DROP TABLE voters; 
 CREATE TABLE voters (
 	id INTEGER PRIMARY KEY,
 	username TEXT UNIQUE NOT NULL
@@ -13,7 +13,11 @@ CREATE TABLE items (
 
 DROP TABLE votes;
 CREATE TABLE votes (
-	voter_id FORIEGN KEY(voters.id),
-	item_id FORIEGN KEY(items.id),
-	selected BOOL DEFAULT "t"
-
+	selected BOOL,
+	voter_id INTEGER NOT NULL, 
+	item_id INTEGER NOT NULL,
+	FOREIGN KEY (voter_id) 
+		REFERENCES voters (id),
+	FOREIGN KEY (item_id) 
+		REFERENCES items (id)
+);
