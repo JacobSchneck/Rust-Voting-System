@@ -1,23 +1,37 @@
-DROP TABLE voters; 
-CREATE TABLE voters (
+DROP TABLE users; 
+CREATE TABLE users (
 	id INTEGER PRIMARY KEY,
-	username TEXT UNIQUE NOT NULL
+	username TEXT NOT NULL
+);
+
+DROP TABLE ballot;
+CREATE TABLE ballot (
+	id INTEGER PRIMARY KEY,
+	user_id INTEGER NOT NULL,
+	title TEXT NOT NULL,
+
+	FOREIGN KEY (user_id) 
+		REFERENCES users(id)
 );
 
 DROP TABLE items;
 CREATE TABLE items (
 	id INTEGER PRIMARY KEY,
+	ballot_id INTEGER NOT NULL,
 	title TEXT UNIQUE NOT NULL,	
-	description TEXT
+	description TEXT,
+
+	FOREIGN KEY (ballot_id) 
+		REFERENCES ballot (id)
 );
 
 DROP TABLE votes;
 CREATE TABLE votes (
-	selected BOOL,
-	voter_id INTEGER NOT NULL, 
+	user_id INTEGER NOT NULL,
 	item_id INTEGER NOT NULL,
-	FOREIGN KEY (voter_id) 
-		REFERENCES voters (id),
-	FOREIGN KEY (item_id) 
+
+	FOREIGN KEY (user_id) 
+		REFERENCES users (id),
+	FOREIGN KEY (item_id)
 		REFERENCES items (id)
 );
