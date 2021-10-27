@@ -5,7 +5,7 @@ const sqlite3 = require("sqlite3").verbose();
 
 
 // Database path
-const pathDb = "./db/voting_system.db"; 
+const pathDb = "./db/testing_db.db"; 
 console.log(pathDb);
 
 let db = new sqlite3.Database(pathDb, err => {
@@ -17,6 +17,8 @@ let db = new sqlite3.Database(pathDb, err => {
 // TODO: Figure that out
 
 //---------------------- GETS ------------------------
+
+// =========> Users <============
 
 // Get all users
 router.get('/users', (req, res) => {
@@ -47,4 +49,41 @@ router.get('/users/:user_id/ballots', (req, res) => {
 // Get all items on a ballot 
 router.get('/users/:user_id/ballots/:ballot_id', (req, res) => {
 	const { user_id, ballot_id } = req.params;
+	const sql = `
+		SELECT
+			users.username AS username,	
+			ballots.title as title,
+			items.item as item
+		FROM items
+		INNER JOIN ballots ON  ballots.id = items.ballot_id
+		INNER JOIN users ON users.id = ballots.user_id;
+	`
+	db.all(sql, [], (err, result) => {
+		if (err) throw err;
+		res.json(result);
+	});
 });
+
+// =========> Ballots <==========
+
+router.get('/ballots', (req, res) => {
+	const sql = "SELECT * from ballots";
+	db.all(sql, [], (err, result) => {
+		if (err) throw err;
+		res.json(result);
+	});
+});
+
+// router.get('/ballots/:ballot_id')
+
+// =========> Items <============
+
+router.get('/items', (req, res) => {
+	const sql = "SELECT * from items";
+	db.all(sql, [], (err, result) => {
+		if (err) throw err;
+		res.json(result);
+	});
+});
+
+module.exports = router;

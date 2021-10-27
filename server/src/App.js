@@ -10,12 +10,13 @@ app.use(cors({
 }));
 
 // Routes 
-const routes = require('./routes');
+const routes = require('./routes.js');
+app.use("/", routes);
 
 app.get("/", (req, res) => {
-	res.send("Hello World!");
+	res.send("Voting System Back End");
 });
 
 module.exports = app.listen(PORT, () => {
-	console.log('Listening on port ${PORT}');
+	console.log(`Listening on port ${PORT}`);
 });
