@@ -17,3 +17,9 @@ INSERT INTO items (id, ballot_id, item) VALUES (3, 3, "Green");
 INSERT INTO items (id, ballot_id, item) VALUES (4, 3, "Pink");
 INSERT INTO items (id, ballot_id, item) VALUES (5, 3, "Black");
 
+-- Make some Votes
+INSERT INTO votes (item_id, user_id) VALUES (1, 1);
+INSERT INTO votes (item_id, user_id) VALUES (2, 2);
+INSERT INTO votes (item_id, user_id) VALUES (2, 3);
+INSERT INTO votes (item_id, user_id) VALUES (4, 4);
+

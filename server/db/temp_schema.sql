@@ -26,3 +26,14 @@ CREATE TABLE items (
 		REFERENCES ballot (id)
 );
 
+DROP TABLE votes;
+CREATE TABLE votes (
+	item_id INTEGER NOT NULL,
+	user_id INTEGER NOT NULL,
+
+	FOREIGN KEY (item_id) 
+		REFERENCES items (id),
+
+	FOREIGN KEY (user_id)
+		REFERENCES users (id)
+)
