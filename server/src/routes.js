@@ -39,8 +39,9 @@ router.get('/users/:user_id/ballots', (req, res) => {
 		FROM users
 		INNER JOIN ballots ON 
 			ballots.user_id = users.id
+		WHERE users.id = ?;
 	`;
-	db.all(sql, [], (err, result) => {
+	db.all(sql, [user_id], (err, result) => {
 		if (err) throw err;
 		res.json(result);
 	});
@@ -56,13 +57,38 @@ router.get('/users/:user_id/ballots/:ballot_id', (req, res) => {
 			items.item as item
 		FROM items
 		INNER JOIN ballots ON  ballots.id = items.ballot_id
-		INNER JOIN users ON users.id = ballots.user_id;
+		INNER JOIN users ON users.id = ballots.user_id
+		WHERE users.id = ? AND ballots.id = ?
 	`
-	db.all(sql, [], (err, result) => {
+	db.all(sql, [user_id, ballot_id], (err, result) => {
 		if (err) throw err;
 		res.json(result);
 	});
 });
+
+// Tally the votes on a Ballot
+router.get('/users/:user_id/ballots/:ballot_id/votes', (req, res) => {
+	const { user_id, ballot_id } = req.params;
+	const sql = `
+		SELECT
+			users.username AS username,	
+			ballots.title AS title,
+			items.item AS item, 
+			COUNT() AS tally
+		FROM votes
+		INNER JOIN items ON votes.item_id = items.id 
+		INNER JOIN ballots ON  ballots.id = items.ballot_id
+		INNER JOIN users ON users.id = ballots.user_id
+		WHERE users.id = ? AND ballots.id = ?
+		GROUP BY votes.item_id;
+	`
+	db.all(sql, [user_id, ballot_id], (err, result) => {
+		if (err) throw err;
+		res.json(result);
+	});
+});
+
+
 
 // =========> Ballots <==========
 

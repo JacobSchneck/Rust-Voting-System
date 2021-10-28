@@ -1,0 +1,16 @@
+.outer-container {
+	background-color: rgb(138, 170, 172);
+	margin: 0px;
+}
+
+.inner-container {
+	display: flex;
+	/* flex-direction: row; */
+	justify-content: right;
+	margin: 10px;
+	margin-right: 5%;
+}
+
+.link-element {
+	margin-left: 2.5%;
+}
