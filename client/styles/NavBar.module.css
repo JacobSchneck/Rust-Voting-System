@@ -1,13 +1,15 @@
 .outer-container {
 	background-color: rgb(138, 170, 172);
 	margin: 0px;
+	height: 10%;
+	border: 1px solid black;
 }
 
 .inner-container {
 	display: flex;
 	/* flex-direction: row; */
 	justify-content: right;
-	margin: 10px;
+	/* margin: 10px; */
 	margin-right: 5%;
 }
 
