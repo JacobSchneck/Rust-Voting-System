@@ -43,12 +43,6 @@ INNER JOIN ballots ON ballots.id = items.ballot_id
 INNER JOIN users ON users.id = ballots.user_id
 GROUP BY votes.item_id;
 
--- SELECT 
--- 	items.item as item,
--- 	-- users.username as username,
--- 	COUNT(votes.user_id)
--- FROM votes
--- INNER JOIN items ON votes.item_id = items.id
--- GROUP BY items.item;
-
-
+-- -- Get ballot by id
+-- SELECT * FROM ballots
+-- WHERE id = 10;

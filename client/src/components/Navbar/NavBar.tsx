@@ -13,6 +13,12 @@ const NavBar = () => {
 				</div>
 
 				<div className={styles["link-element"]}>
+					<Link href="/">
+						<a>Make Ballot</a>
+					</Link>
+				</div>
+
+				<div className={styles["link-element"]}>
 					<Link href="/Login">
 						<a>Login</a>
 					</Link>

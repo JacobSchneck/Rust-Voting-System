@@ -1,10 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import NavBar from "../src/components/Navbar/NavBar";
 import Footer from "../src/components/Footer/Footer";
+import BallotCard from "../src/types/BallotCard";
+import axios from "axios";
 
 export default function Home() {
   const [viewItems, setViewItems] = useState<boolean[]>(Array(10).fill(false));
+  const [ballotCards, setBallotCards] = useState<BallotCard[]>([]);
+
+  useEffect( () => {
+    async function fetchBallotCards() {
+      try {
+        const response  = await axios.get("http://localhost:8000/users/ballots");
+        const data = await response.data
+        console.log(data);
+        setBallotCards(data);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchBallotCards();
+  }, [])
 
   const handleView = (event, index) => {
     // event.preventDefault();
@@ -47,25 +64,18 @@ export default function Home() {
   }
 
   const renderBallots = () => {
-    const arr = Array(10).fill(0);
     return (
-      arr.map( (el, index) => {
+      ballotCards.map( (card, index) => {
         return (
           <div style={{
             border: "1px solid black",
             display: "flex",
-            flexDirection: "row",
+            flexDirection: "column",
             padding: "1%"
-          }}>
-              {/* <h1> */}
-                Ballot Description
-              {/* </h1> */}
-
-              <button style={{marginLeft: "5px"}} onClick={(event) => handleView(event, index)}>
-                View
-              </button>
-              {renderItems(index)}
-
+          }} onClick={(event)=> handleView(event, index)}>
+              <div> {card.title} </div>
+              <div> {renderItems(index)} </div>
+              <div> {card.username} </div>
           </div>
         )
       })

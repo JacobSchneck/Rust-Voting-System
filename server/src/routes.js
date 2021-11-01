@@ -29,6 +29,21 @@ router.get('/users', (req, res) => {
 	});
 });
 
+// Get all users and ballots
+router.get('/users/ballots', (req, res) => {
+	const sql = `SELECT 
+		users.username as username,
+		ballots.title as title,
+		ballots.id as ballot_id
+	FROM users
+	JOIN ballots on users.id = ballots.user_id`;
+	db.all(sql, [], (err, result) => {
+		if (err) throw err;
+		res.json(result);
+	});
+});
+
+
 // Get all ballots made by user
 router.get('/users/:user_id/ballots', (req, res) => {
 	const { user_id } = req.params;
@@ -100,7 +115,32 @@ router.get('/ballots', (req, res) => {
 	});
 });
 
-// router.get('/ballots/:ballot_id')
+router.get('/ballots/:id', (req, res) => {
+	const { id } = req.params;
+	const sql = "SELECT * FROM ballots WHERE id = ?";
+	db.all(sql, [id], (err, result) => {
+		if (err) throw err;
+		res.json(result);
+	});
+});
+
+router.get('/ballots/users', (req, res) => {
+	// const { ballot_id } = req.params;
+	res.send("HELLO from ballots/users")
+	// const sql = `
+	// 	SELECT 
+	// 		users.username AS username,	
+	// 		ballots.title as title
+	// 	FROM ballots
+	// 	JOIN users ON users.id = ballots.user_id;
+	// `;
+	// console.log(sql);
+	// db.all(sql, [], (err, result) => {
+	// 	if (err) throw err;
+	// 	console.log(result);
+	// 	res.json(result);
+	// });
+});
 
 // =========> Items <============
 
