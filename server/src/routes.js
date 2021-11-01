@@ -1,5 +1,6 @@
 const express = require("express");
 const { appendFile } = require("fs");
+const { resolve } = require("path");
 const router = express.Router();
 const sqlite3 = require("sqlite3").verbose();
 
@@ -43,6 +44,69 @@ router.get('/users/ballots', (req, res) => {
 	});
 });
 
+
+/*
+	{
+		ballot_title: string
+		description: string
+		username: string,
+		items: []
+	}
+
+*/
+
+// Get all users, ballots and the ballots items `
+router.get('/users/ballots/items', (req, res) => {
+
+	const sql = `SELECT 
+		users.username as username,
+		ballots.title as title,
+		ballots.description as description,
+		ballots.id as ballot_id,
+		items.item as item
+	FROM users
+	JOIN ballots on users.id = ballots.user_id
+	JOIN items on ballots.id = items.ballot_id
+	--GROUP BY ballots.title;
+	`
+	;
+
+	const data = [];
+	db.all(sql, [], (err, rows) => {
+		if (err) throw err;
+
+
+		let prevBallotId = -1;
+		let ballotCard = {"items": []};
+		rows.forEach( row => {
+			if (prevBallotId != row.ballot_id) {
+				if (prevBallotId !== -1) {
+					data.push(ballotCard);
+				}
+				ballotCard = {"items": []};
+
+				// add row
+				ballotCard["ballotId"] = row.ballot_id;
+				ballotCard["title"] = row.title;
+				ballotCard["desription"] = row.description;
+				ballotCard["username"] = row.username;
+				ballotCard["items"].push(row.item);
+
+				prevBallotId = row.ballot_id;
+			} else {
+				ballotCard["ballotId"] = row.ballot_id;
+				ballotCard["title"] = row.title;
+				ballotCard["desription"] = row.description;
+				ballotCard["username"] = row.username;
+				ballotCard["items"].push(row.item);
+
+				prevBallotId = row.ballot_id;
+			}
+		})
+		return res.json(data);
+	});
+	// console.log(data);
+});
 
 // Get all ballots made by user
 router.get('/users/:user_id/ballots', (req, res) => {
