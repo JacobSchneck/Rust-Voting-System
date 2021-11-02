@@ -3,35 +3,33 @@ import Footer from "../../src/components/Footer/Footer";
 import NavBar from "../../src/components/NavBar/NavBar";
 
 const MakeBallotHome = () => {
-	const [items, setItems] = useState<string[]>([]);
+	const [items, setItems] = useState<Array<string>>([]);
+	console.log(items)
 
 	const handleAddItems = (event: { preventDefault: () => void; }) => {
 		event.preventDefault();
 		if (items[0] === "ho") {
 			setItems(["Hi"]) // check for empty strings on submit
 		} else {
-			setItems([...items, "Ho"]);
+			setItems(prevItems => [...prevItems, "Ho"]);
 		}
-		console.log(items)
-
 	}
 
-	const handleDeleteItem = (event, index: number) => {
-		event.preventDefault();
-		const newItems = items.slice();
-		newItems.splice(index, 1);
-		setItems(newItems);
-	}
+	// const handleDeleteItem = (event, index: number) => {
+	// 	event.preventDefault();
+	// 	const newItems = items.slice();
+	// 	newItems.splice(index, 1);
+	// 	setItems(newItems);
+	// }
 
 	const renderItems = () => {
-		console.log(items);
-		return items.fill(null).map( (item, index) => {
-			// console.log(items[index]);
+		return items.map( (item, index) => {
 			return (
 				<div key={`${item}-${index}`}>
+					{`${index}-${item}`}
 					{/* <input type="text" placeholder={`Items #${index}`} onChange={(event) => handleChangeItems(event, index)}/> */}
-					<input type="text" placeholder={`Items #${index}`} />
-					<button onClick={(event) => handleDeleteItem(event, index)}> Delete </button>
+					{/* <input type="text" placeholder={`Items #${index}`} /> */}
+					{/* <button onClick={(event) => handleDeleteItem(event, index)}> Delete </button> */}
 				</div>
 			);
 		})	;
@@ -49,8 +47,8 @@ const MakeBallotHome = () => {
 					{renderItems()}
 					{/* <input type="submit" value="Make Ballot"/> */}
 				</form>
+				<button onClick={(event) => handleAddItems(event)}> Add More Items </button>
 			</div>
-			<button onClick={(event) => handleAddItems(event)}> Add More Items </button>
 
 			<Footer />
 		</div>
