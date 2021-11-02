@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import NavBar from "../src/components/Navbar/NavBar";
+import NavBar from "../src/components/NavBar/NavBar";
 import Footer from "../src/components/Footer/Footer";
 import BallotCard from "../src/types/BallotCard";
 import axios from "axios";
@@ -12,7 +12,7 @@ export default function Home() {
   useEffect( () => {
     async function fetchBallotCards() {
       try {
-        const response  = await axios.get("http://localhost:8000/users/ballots");
+        const response  = await axios.get("http://localhost:8000/users/ballots/items");
         const data = await response.data
         console.log(data);
         setBallotCards(data);
@@ -44,7 +44,7 @@ export default function Home() {
     else {
       return ( 
         <div style={{
-          borderRadius: "3px",
+          borderRadius: "10px",
           border: "1px solid black",
           display: "flex",
           flexDirection: "column",
@@ -52,12 +52,14 @@ export default function Home() {
           padding: "10px"
         }}>
           <ol style={{display: "grid" }}> 
-            <li> <button> Thing       </button> </li>
-            <li> <button> Object      </button> </li>
-            <li> <button> Wing Doodle </button> </li>
-            <li> <button> SpeckleDorf </button> </li>
+            { ballotCards[index].items.map( (item, index) => {
+              return (
+                <li> 
+                  <button> {item} </button>
+                </li>
+              );
+            }) }
           </ol>  
-
         </div>
       )
     }

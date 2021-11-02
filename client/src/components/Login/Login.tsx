@@ -1,5 +1,5 @@
 import Footer from "../Footer/Footer";
-import NavBar from "../Navbar/NavBar";
+import NavBar from "../NavBar/NavBar";
 
 const Login = () => {
 	return (
