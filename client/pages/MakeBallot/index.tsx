@@ -1,6 +1,18 @@
-import { useState } from "react";
+import { ChangeEvent, MouseEvent, useState } from "react";
 import Footer from "../../src/components/Footer/Footer";
 import NavBar from "../../src/components/NavBar/NavBar";
+
+interface Ballot {
+	user_id: number,
+	title: string,
+	description: string,
+}
+
+interface Item {
+	ballot_id: number,
+	title: string,
+	description: string,
+}
 
 const MakeBallotHome = () => {
 	const [items, setItems] = useState<Array<string>>([]);
@@ -8,28 +20,28 @@ const MakeBallotHome = () => {
 
 	const handleAddItems = (event: { preventDefault: () => void; }) => {
 		event.preventDefault();
-		if (items[0] === "ho") {
-			setItems(["Hi"]) // check for empty strings on submit
-		} else {
-			setItems(prevItems => [...prevItems, "Ho"]);
-		}
+		setItems(prevItems => [...prevItems, ""]);
 	}
 
-	// const handleDeleteItem = (event, index: number) => {
-	// 	event.preventDefault();
-	// 	const newItems = items.slice();
-	// 	newItems.splice(index, 1);
-	// 	setItems(newItems);
-	// }
+	const handleDeleteItem = (event, index: number) => {
+		event.preventDefault();
+		const newItems = items.slice();
+		newItems.splice(index, 1);
+		setItems(newItems);
+	}
+
+	const handleChangeItems = (event, index: number) => {
+		const newItems = items.slice();
+		newItems[index] = event.target.value;
+		setItems(newItems);
+	}
 
 	const renderItems = () => {
 		return items.map( (item, index) => {
 			return (
 				<div key={`${item}-${index}`}>
-					{`${index}-${item}`}
-					{/* <input type="text" placeholder={`Items #${index}`} onChange={(event) => handleChangeItems(event, index)}/> */}
-					{/* <input type="text" placeholder={`Items #${index}`} /> */}
-					{/* <button onClick={(event) => handleDeleteItem(event, index)}> Delete </button> */}
+					<input type="text" placeholder={`Items #${index + 1}`} onChange={(event) => handleChangeItems(event, index)}/>
+					<button onClick={(event) => handleDeleteItem(event, index)}> Delete </button>
 				</div>
 			);
 		})	;
@@ -41,13 +53,24 @@ const MakeBallotHome = () => {
 			<NavBar />
 			<div className="main-block">
 				<form className="basic-form">
-					{/* <input type="text" placeholder="Ballot Title"  maxLength={256} />
-					<input type="text" placeholder="Description" maxLength={256} /> */}
-					{/* <input type="text" placeholder="Item #1" maxLength={100}/> */}
+					<input type="text" placeholder="Ballot Title"  maxLength={256} />
+					<input type="text" placeholder="Description" maxLength={256} style={{marginBottom: "5px"}} />
+
+					<form style={{
+						display: "flex",
+						flexDirection: "row",
+						marginBottom: "5px",
+					}}>
+							<input type="text" placeholder="Item" />
+							<input type="submit" value="Add Item" />
+							<button> Delete </button>
+					</form>
+
 					{renderItems()}
-					{/* <input type="submit" value="Make Ballot"/> */}
+					<button onClick={(event) => handleAddItems(event)}> New Item </button>
+
+					<input type="submit" value="Make Ballot" style={{marginTop: "10px"}}/>
 				</form>
-				<button onClick={(event) => handleAddItems(event)}> Add More Items </button>
 			</div>
 
 			<Footer />

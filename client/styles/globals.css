@@ -28,6 +28,7 @@ a {
 .basic-form {
 	display: flex;
 	flex-direction: column;
+  margin: 25px;
 }
 
 .footer {
