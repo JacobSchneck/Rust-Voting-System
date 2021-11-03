@@ -10,67 +10,133 @@ interface Ballot {
 
 interface Item {
 	ballot_id: number,
-	title: string,
-	description: string,
+	item: string,
 }
 
 const MakeBallotHome = () => {
-	const [items, setItems] = useState<Array<string>>([]);
-	console.log(items)
+	const [title, setTitle] = useState<string>(""); // ballot title
+	const [description, setDescription] = useState<string>(""); // ballot description
+
+	const [addedItems, setAddedItems] = useState<boolean[]>([]);
+	const [item, setItem] = useState<string>("");
+	const [items, setItems] = useState<Array<string>>([]); // items on the ballot
+
+	const [step, setStep] = useState<number>(0); // Describes the step the user is on in Make Ballot
+
+	console.log(addedItems);
+	console.log(items);
 
 	const handleAddItems = (event: { preventDefault: () => void; }) => {
 		event.preventDefault();
-		setItems(prevItems => [...prevItems, ""]);
+		setAddedItems([...addedItems, false]);
 	}
 
 	const handleDeleteItem = (event, index: number) => {
 		event.preventDefault();
+
+		const newAddedItems = addedItems.slice();
+		newAddedItems.splice(index, 1);
+		setAddedItems(newAddedItems);
+
 		const newItems = items.slice();
 		newItems.splice(index, 1);
 		setItems(newItems);
 	}
+	
+	const handleAddItem = (event, index) => {
+		event.preventDefault();
 
-	const handleChangeItems = (event, index: number) => {
-		const newItems = items.slice();
-		newItems[index] = event.target.value;
-		setItems(newItems);
+		const newAddedItems = addedItems.slice();
+		newAddedItems[index] = true;
+
+		setAddedItems(newAddedItems);
+		setItems([...items, item]);
+	}
+
+	const addOrDeleteItem = (index) => {
+		if (addedItems[index] === false) {
+			return (
+				<>
+					<input type="text" placeholder="text" onChange={(event) => setItem(event.target.value)} />
+					<input type="submit" value="Add" onClick={ event => handleAddItem(event, index)} style={{width: "100px"}}/>
+				</>
+			);
+		} else {
+			return (
+				<>
+					<p>{items[index]}</p>
+					<button onClick={ event => handleDeleteItem(event, index)} style={{width: "100px"}}>Delete</button> 
+				</>
+			)
+		}
 	}
 
 	const renderItems = () => {
-		return items.map( (item, index) => {
+		return addedItems.map( (item, index) => {
 			return (
-				<div key={`${item}-${index}`}>
-					<input type="text" placeholder={`Items #${index + 1}`} onChange={(event) => handleChangeItems(event, index)}/>
-					<button onClick={(event) => handleDeleteItem(event, index)}> Delete </button>
-				</div>
+				<form>
+					{addOrDeleteItem(index)}
+				</form>
 			);
 		})	;
-		
 	}
+
+	// TODO: Consider making its own component
+	const renderBallotForm = () => {
+		if (step !== 0) return null;
+		return (
+				<div style={{textAlign: "center"}}>
+					<h2>Create a Ballot</h2>
+					<form className="basic-form">
+						<input 
+							type="text" 
+							placeholder="Ballot Title"  
+							maxLength={256} 
+							onChange={(event) => setTitle(event.target.value)}
+						/>
+						<input 
+							type="text" 
+							placeholder="Description" 
+							maxLength={256} 
+							style={{marginBottom: "5px"}} 
+							onChange={(event) => setDescription(event.target.value)}
+						/>
+						<input type="submit" value="Next" onClick={() => setStep( s => s + 1)}/>	
+					</form>
+				</div>
+		);
+	}
+
+	const renderAddItemButton = () => {
+		if (addedItems.includes(false)) return null;
+		else return <button onClick={(event) => handleAddItems(event)}> Add Item </button>
+	}
+
+	const renderItemsForm = () => {
+		if (step != 1) return null;
+		return (
+			<div style={{textAlign: "center"}}>
+				<h2>Add Items</h2>
+				<form className="basic-form">
+					{renderItems()}
+				</form>
+				{renderAddItemButton()}
+
+				<div style={{ display: "flex", flexDirection: "row" }}>
+					<button onClick={() => setStep(s => s - 1)} style={{width: "50%"}}> Back </button>
+					<input type="submit" value="Next" onClick={() => setStep(s => s + 1)} style={{width: "50%"}}/>
+				</div>
+			</div>
+		);
+	}
+
 
 	return (
 		<div>
 			<NavBar />
 			<div className="main-block">
-				<form className="basic-form">
-					<input type="text" placeholder="Ballot Title"  maxLength={256} />
-					<input type="text" placeholder="Description" maxLength={256} style={{marginBottom: "5px"}} />
-
-					<form style={{
-						display: "flex",
-						flexDirection: "row",
-						marginBottom: "5px",
-					}}>
-							<input type="text" placeholder="Item" />
-							<input type="submit" value="Add Item" />
-							<button> Delete </button>
-					</form>
-
-					{renderItems()}
-					<button onClick={(event) => handleAddItems(event)}> New Item </button>
-
-					<input type="submit" value="Make Ballot" style={{marginTop: "10px"}}/>
-				</form>
+				{renderBallotForm()}
+				{renderItemsForm()}
 			</div>
 
 			<Footer />
