@@ -23,9 +23,6 @@ const MakeBallotHome = () => {
 
 	const [step, setStep] = useState<number>(0); // Describes the step the user is on in Make Ballot
 
-	console.log(addedItems);
-	console.log(items);
-
 	const handleAddItems = (event: { preventDefault: () => void; }) => {
 		event.preventDefault();
 		setAddedItems([...addedItems, false]);
@@ -130,6 +127,32 @@ const MakeBallotHome = () => {
 		);
 	}
 
+	const renderReviewForm = () => {
+		if (step != 2) return null;
+		return (
+			<div>
+				<div>
+					<div style={{border: "1px solid black", margin: "5px", padding: "5px"}}>Ballot Title: {title} </div>
+					<div style={{border: "1px solid black", margin: "5px", padding: "5px"}}>Ballot Description: {description} </div>
+					<div style={{border: "1px solid black", margin: "5px", padding: "5px"}}>
+						<ol>
+							{items.map(item => {
+								return (
+									<li>{item}</li>
+								)
+							})}
+						</ol>
+					</div>
+				</div>
+
+				<div style={{display: "flex", flexDirection: "column"}}>
+					<button onClick={() => setStep(s => s - 1)}> Back </button>
+					<button>Submit Ballot</button>
+				</div>
+			</div>
+		);
+	}
+
 
 	return (
 		<div>
@@ -137,6 +160,7 @@ const MakeBallotHome = () => {
 			<div className="main-block">
 				{renderBallotForm()}
 				{renderItemsForm()}
+				{renderReviewForm()}
 			</div>
 
 			<Footer />
