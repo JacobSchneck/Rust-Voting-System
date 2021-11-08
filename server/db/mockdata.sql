@@ -1,8 +1,8 @@
 -- Add users into users table
-INSERT INTO users (id, username) VALUES (1, "BOB");
-INSERT INTO users (id, username) VALUES (2, "Jill");
-INSERT INTO users (id, username) VALUES (3, "Cassy");
-INSERT INTO users (id, username) VALUES (4, "Dill Pickle");
+INSERT INTO users (id, username, email) VALUES (1, "BOB", "bob@example.com");
+INSERT INTO users (id, username, email) VALUES (2, "Jill", "jill@example.com");
+INSERT INTO users (id, username, email) VALUES (3, "Cassy", "cassy@example.com");
+INSERT INTO users (id, username, email) VALUES (4, "Dill Pickle", "dill@example.com");
 
 -- Add ballots to a user
 INSERT INTO ballots (id, user_id, title) VALUES (1, 1, "Best Pets");

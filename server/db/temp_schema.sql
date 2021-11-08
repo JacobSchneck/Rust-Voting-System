@@ -1,9 +1,9 @@
 DROP TABLE users;
 CREATE TABLE users (
 	id INTEGER PRIMARY KEY,
-	username TEXT NOT NULL UNIQUE,
-	email TEXT NOT NULL UNIQUE
+	username TEXT NOT NULL UNIQUE
 );
+ALTER TABLE users ADD email TEXT NOT NULL DEFAULT "null@null.null";
 
 DROP TABLE ballots; 
 CREATE TABLE ballots (
