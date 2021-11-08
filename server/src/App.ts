@@ -1,5 +1,6 @@
-const express = require('express');
-const cors = require('cors');
+import express from 'express';
+import cors from 'cors';
+
 const app = express();
 const PORT = process.env.PORT || 8000;
 
@@ -10,10 +11,10 @@ app.use(cors({
 }));
 
 // Routes 
-const routes = require('./routes.js');
+const routes = require('./routes.ts');
 app.use("/", routes);
 
-app.get("/", (req, res) => {
+app.get("/", (req: any, res: any) => {
 	res.send("Voting System Back End");
 });
 
