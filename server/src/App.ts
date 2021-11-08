@@ -11,9 +11,16 @@ app.use(cors({
 }));
 
 // Routes 
-const routes = require('./routes.ts');
-app.use("/", routes);
 
+const users = require('./routes/users');
+const ballots = require('./routes/ballots');
+const items = require('./routes/items');
+
+app.use("/users", users);
+app.use("/ballots", ballots);
+app.use("/items", items);
+
+//
 app.get("/", (req: any, res: any) => {
 	res.send("Voting System Back End");
 });
