@@ -1,7 +1,8 @@
 DROP TABLE users;
 CREATE TABLE users (
 	id INTEGER PRIMARY KEY,
-	username TEXT NOT NULL UNIQUE
+	username TEXT NOT NULL UNIQUE,
+	email TEXT NOT NULL UNIQUE
 );
 
 DROP TABLE ballots; 

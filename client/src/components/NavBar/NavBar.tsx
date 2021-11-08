@@ -2,7 +2,26 @@ import Link from "next/link";
 
 import styles from "../../../styles/NavBar.module.css";
 
+import { useUser } from '@auth0/nextjs-auth0'
+
 const NavBar = () => {
+	const { user } = useUser();
+	const url = user ? "/api/auth/logout" : "/api/auth/login";
+	const loginLabel = user ? "logout" : "login";
+
+	const renderUser = () => {
+		if (loginLabel === "login") return null;
+		else {
+			return (
+				<div className={styles["link-element"]}>
+					<Link href="/User">
+						<a>User</a>
+					</Link>
+				</div>
+			)
+		}
+	}
+
 	return (
 		<div className={styles["outer-container"]}>
 			<div className={styles["inner-container"]}>
@@ -18,18 +37,14 @@ const NavBar = () => {
 					</Link>
 				</div>
 
-				<div className={styles["link-element"]}>
-					<Link href="/Login">
-						<a>Login</a>
-					</Link>
-				</div>
+				{renderUser()}
 
-				{/*TODO: Route to specific userpage */}
 				<div className={styles["link-element"]}>
-					<Link href="/User">
-						<a>User</a>
+					<Link href={url}>
+						<a>{loginLabel}</a>
 					</Link>
 				</div>
+				
 			</div>
 		</div>
 	)

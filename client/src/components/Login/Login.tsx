@@ -1,6 +1,7 @@
 import Footer from "../Footer/Footer";
 import NavBar from "../NavBar/NavBar";
 
+// TODO: Refactor with Auth
 const Login = () => {
 	return (
 		<div>
@@ -19,5 +20,27 @@ const Login = () => {
 		</div>
 	)
 }
+
+
+// const LoginLink = () => {
+// 	return (
+// 		<div 
+// 			<Link href="/api/auth/login">
+// 				<a>Login</a>
+// 			</Link>
+// 		</div>
+// 	)
+// }
+
+// const Login = () => {
+// 	return (
+
+// 		<div className={styles["link-element"]}>
+// 			<Link href="/api/auth/login">
+// 				<a>Login</a>
+// 			</Link>
+// 		</div>
+// 	)
+// }
 
 export default Login;

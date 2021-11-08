@@ -54,7 +54,7 @@ export default function Home() {
           <ol style={{display: "grid" }}> 
             { ballotCards[index].items.map( (item, index) => {
               return (
-                <li> 
+                <li key={`${item}-${index}`}> 
                   <button> {item} </button>
                 </li>
               );
@@ -69,7 +69,7 @@ export default function Home() {
     return (
       ballotCards.map( (card, index) => {
         return (
-          <div style={{
+          <div key={`${card.title}-${index}}`} style={{
             border: "1px solid black",
             display: "flex",
             flexDirection: "column",
