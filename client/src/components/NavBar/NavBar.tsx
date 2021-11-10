@@ -22,23 +22,48 @@ const NavBar = () => {
 		}
 	}
 
+	const renderMakeBallot = () => {
+		if (loginLabel === "login") {
+			return (
+				<div className={styles["link-element"]}>
+					<Link href={url}>
+						<a>Make Ballot</a>
+					</Link>
+				</div>
+			);
+		} else {
+			return (
+				<div className={styles["link-element"]}>
+					<Link href="/MakeBallot">
+						<a>Make Ballot</a>
+					</Link>
+				</div>
+			);
+		}
+	}
+
 	return (
 		<div className={styles["outer-container"]}>
 			<div className={styles["inner-container"]}>
+				{/* Home Page */}
 				<div className={styles["link-element"]}>
 					<Link href="/">
 						<a>Home</a>
 					</Link>
 				</div>
 
-				<div className={styles["link-element"]}>
+				{/* Make Ballot Page */}
+				{renderMakeBallot()}
+				{/* <div className={styles["link-element"]}>
 					<Link href="/MakeBallot">
 						<a>Make Ballot</a>
 					</Link>
-				</div>
+				</div> */}
 
+				{/* User Page */}
 				{renderUser()}
 
+				{/* Login/Logout Page */}
 				<div className={styles["link-element"]}>
 					<Link href={url}>
 						<a>{loginLabel}</a>

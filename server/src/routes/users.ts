@@ -4,6 +4,8 @@ import connectToDb from "../services/connectToDb";
 
 let db = connectToDb();
 
+//--------------------- GETS -------------------------
+
 // get all users
 router.get('/', (req, res) => {
 	const sql = "SELECT * from users";
@@ -138,5 +140,7 @@ router.get('/ballots/items', (req, res) => {
 	});
 	// console.log(data);
 });
+
+//--------------------- POSTS-------------------------
 
 module.exports = router;
