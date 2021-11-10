@@ -4,7 +4,9 @@ import connectToDb from "../services/connectToDb";
 
 let db = connectToDb();
 
-// get all Items
+//--------------------- GETS -------------------------
+
+// get all items
 router.get('/', (req, res) => {
 	const sql = "SELECT * from items";
 	db.all(sql, [], (err: any, result: any) => {
@@ -12,5 +14,7 @@ router.get('/', (req, res) => {
 		res.json(result);
 	});
 });
+
+//--------------------- POSTS-------------------------
 
 module.exports = router;

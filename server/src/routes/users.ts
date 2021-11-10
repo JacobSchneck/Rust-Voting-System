@@ -138,7 +138,6 @@ router.get('/ballots/items', (req, res) => {
 		})
 		return res.json(data);
 	});
-	// console.log(data);
 });
 
 //--------------------- POSTS-------------------------
