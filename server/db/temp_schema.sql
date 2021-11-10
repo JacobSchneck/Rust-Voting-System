@@ -36,5 +36,7 @@ CREATE TABLE votes (
 		REFERENCES items (id),
 
 	FOREIGN KEY (user_id)
-		REFERENCES users (id)
-)
+		REFERENCES users (id),
+	
+	CONSTRAINT UC_Votes UNIQUE (item_id, user_id)
+);

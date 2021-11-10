@@ -82,3 +82,6 @@ INSERT INTO votes (item_id, user_id) VALUES (2, 2);
 INSERT INTO votes (item_id, user_id) VALUES (2, 3);
 INSERT INTO votes (item_id, user_id) VALUES (4, 4);
 
+-- What happens if I do this?
+INSERT INTO votes (item_id, user_id) VALUES (1, 1);
+
