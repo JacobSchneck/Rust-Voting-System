@@ -4,6 +4,7 @@ CREATE TABLE users (
 	username TEXT NOT NULL UNIQUE
 );
 ALTER TABLE users ADD email TEXT NOT NULL DEFAULT "null@null.null";
+ALTER TABLE users ADD privledge TEXT NOT NULL DEFAULT "USER";
 
 DROP TABLE ballots; 
 CREATE TABLE ballots (

@@ -78,10 +78,9 @@ INSERT INTO items (ballot_id, item) VALUES (10, "All of the Above");
 
 -- Make some Votes
 INSERT INTO votes (item_id, user_id) VALUES (1, 1);
+INSERT INTO votes (item_id, user_id) VALUES (2, 1);
+INSERT INTO votes (item_id, user_id) VALUES (3, 1);
+INSERT INTO votes (item_id, user_id) VALUES (4, 1);
 INSERT INTO votes (item_id, user_id) VALUES (2, 2);
 INSERT INTO votes (item_id, user_id) VALUES (2, 3);
 INSERT INTO votes (item_id, user_id) VALUES (4, 4);
-
--- What happens if I do this?
-INSERT INTO votes (item_id, user_id) VALUES (1, 1);
-

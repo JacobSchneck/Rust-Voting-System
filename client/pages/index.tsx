@@ -2,49 +2,56 @@ import { useEffect, useState } from "react";
 
 import NavBar from "../src/components/NavBar/NavBar";
 import Footer from "../src/components/Footer/Footer";
-import BallotCard from "../src/types/BallotCard";
 import axios from "axios";
+
+import BallotCard from "../src/types/BallotCard";
+
+import { useUser } from "@auth0/nextjs-auth0";
 
 export default function Home() {
   const [viewItems, setViewItems] = useState<boolean[]>(Array(10).fill(false));
   const [ballotCards, setBallotCards] = useState<BallotCard[]>([]);
+  const { user } = useUser();
 
   useEffect( () => {
     async function fetchBallotCards() {
       try {
         const response  = await axios.get("http://localhost:8000/users/ballots/items");
         const data = await response.data
-        console.log(data);
         setBallotCards(data);
       } catch (e) {
-        console.error(e);
       }
     };
     fetchBallotCards();
   }, [])
 
-  const handleView = (event, index) => {
-    // event.preventDefault();
-
+  const handleView = (event: any, index: number) => {
     if (viewItems[index]) {
       console.log(`Goodbye ballot #${index}`);
       viewItems[index] = false;
       setViewItems([...viewItems]);
     } else {
       console.log(`Hello ballot: #${index}`);
-
       viewItems[index] = true;
       setViewItems([...viewItems]);
-
     }
   }
 
-  const renderItems = (index) => {
+  // TODO: Actually record votes
+  const handleVote = () => {
+    if (!user) {
+      alert("In order to vote please log in.");
+      return;
+    }
+
+    alert("Thank you for voting");
+  }
+
+  const renderItems = (index: number) => {
     if (viewItems[index] === false) return null;
     else {
       return ( 
         <div style={{
-          borderRadius: "10px",
           border: "1px solid black",
           display: "flex",
           flexDirection: "column",
@@ -55,13 +62,13 @@ export default function Home() {
             { ballotCards[index].items.map( (item, index) => {
               return (
                 <li key={`${item}-${index}`}> 
-                  <button> {item} </button>
+                  <button onClick={() => handleVote()}> {item} </button>
                 </li>
               );
             }) }
           </ol>  
         </div>
-      )
+      );
     }
   }
 
@@ -102,8 +109,6 @@ export default function Home() {
 
       </div>
 
-
-      {/* TODO: Adjust Footer so it is limited in size */}
       <Footer />
     </div>
   );

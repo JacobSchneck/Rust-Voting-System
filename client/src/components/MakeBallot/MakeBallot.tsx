@@ -3,7 +3,12 @@ import BallotForm from "./BallotForm";
 import ItemsForm from "./ItemsForm";
 import ReviewForm from "./ReviewForm";
 
+import { useUser } from "@auth0/nextjs-auth0";
+
 const MakeBallot = () => {
+	const { user } = useUser();
+	if (!user) return;   
+
 	const [title, setTitle] = useState<string>(""); // ballot title
 	const [description, setDescription] = useState<string>(""); // ballot description
 

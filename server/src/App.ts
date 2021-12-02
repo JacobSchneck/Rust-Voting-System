@@ -11,7 +11,6 @@ app.use(cors({
 }));
 
 // Routes 
-
 const users = require('./routes/users');
 const ballots = require('./routes/ballots');
 const items = require('./routes/items');
