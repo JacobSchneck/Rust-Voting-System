@@ -1,0 +1,85 @@
+{
+	"ballotCard": [
+		{
+			"title": "Batman vs Superman",
+			"details": "Who makes the better soufflé",
+			"username": "ILuvThePinkPowerRanger",
+			"items": [
+				{
+					"title": "Batman",
+					"votes": 0,
+					"id": 1
+				},
+				{
+					"title": "Superman",
+					"votes": 0,
+					"id": 2
+				}
+			],
+			"id": 2
+		},
+		{
+			"title": "Which Power Ranger is best?",
+			"details": "",
+			"username": "TotallyNotThePinkPowerRanger",
+			"items": [
+				{
+					"title": "Pink",
+					"votes": 0,
+					"id": 2
+				},
+				{
+					"title": "Blue",
+					"votes": 0,
+					"id": 3
+				},
+				{
+					"title": "Green",
+					"votes": 0,
+					"id": 4
+				},
+				{
+					"title": "Red",
+					"votes": 0,
+					"id": 5
+				}
+			],
+			"id": 1
+		},
+		{
+			"title": "Do you think my mom loves me?",
+			"details": "Be honest...",
+			"username": "FishAreFriendsNotFood",
+			"items": [
+				{
+					"title": "No",
+					"votes": 0,
+					"id": 6
+				},
+				{
+					"title": "Yes",
+					"votes": 0,
+					"id": 7
+				},
+				{
+					"title": "See Results",
+					"votes": 0,
+					"id": 8
+				}
+			],
+			"id": 3
+		}
+	],
+	"users": [
+		{
+			"username": "PeanutButterCracklin",
+			"email": "nutsNotButs@aol.net",
+			"id": 1
+		},
+		{
+			"username": "ILuvThePinkPowerRanger",
+			"email": "pink_power_ranger_possi@email.com",
+			"id": 2
+		}
+	]
+}

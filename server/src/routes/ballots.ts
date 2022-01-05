@@ -1,50 +1,74 @@
 import express from 'express';
 const router = express.Router();
-import connectToDb from "../services/connectToDb";
+const db = require('../../db/index.js');
 
-let db = connectToDb();
 
 //--------------------- GETS -------------------------
 
 // get all ballots
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
 	const sql = "SELECT * from ballots";
-	db.all(sql, [], (err: any, result: any) => {
-		if (err) throw err;
-		res.json(result);
-	});
+	try {
+		const { rows } = await db.query(sql, []);
+		res.json(rows);
+	} catch (e) {
+		console.log(e);
+		res.send("Error with retrieving data");
+	}
 });
 
 // get a specific ballot
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
 	const { id } = req.params;
-	const sql = "SELECT * FROM ballots WHERE id = ?";
-	db.all(sql, [id], (err: any, result: any) => {
-		if (err) throw err;
-		res.json(result);
-	});
+	const query = { 
+		name: "Get-Specific-Ballot",
+		text: "SELECT * FROM ballots WHERE id = $1",
+		values: [id]
+	}
+	try {
+		const { rows } = await db.query(query);
+		res.json(rows);
+	} catch (e) {
+		console.log(e);
+		res.send("Error with retrieving data");
+	}
 });
 
 // tally votes on a ballot
-router.get('/:ballot_id/votes', (req, res) => {
-	const {ballot_id} = req.params;
+router.get('/:ballot_id/votes', async (req, res) => {
+	const { ballot_id } = req.params;
 	const sql = `
-		SELECT
-			users.username AS username,	
-			ballots.title AS title,
-			items.item AS item, 
-			COUNT() AS tally
-		FROM votes
-		INNER JOIN items ON votes.item_id = items.id 
-		INNER JOIN ballots ON  ballots.id = items.ballot_id
-		INNER JOIN users ON users.id = ballots.user_id
-		WHERE ballots.id = ?
-		GROUP BY votes.item_id;
+	select 
+		users.username as username,
+		ballots.title as ballot,
+		items.item as item,
+		tally.ct as result
+	from (
+		select 
+			votes.item_id as item_id,
+			count(item_id) as ct
+		from votes
+		group by votes.item_id
+	) as tally
+	inner join items on items.id = tally.item_id 
+	inner join ballots on ballots.id = items.ballot_id
+	inner join users on ballots.user_id = users.id
+	where ballots.id = $1;
 	`;
-	db.all(sql, [ballot_id], (err: any, result: any) => {
-		if (err) throw err;
-		res.json(result);
-	});
+
+	const query = {
+		name: 'Tally-Votes',
+		text: sql,
+		values: [ballot_id],
+	};
+
+	try {
+		const { rows } = await db.query(query);
+		res.json(rows);
+	} catch (e) {
+		console.log(e);
+		res.send("Error with retrieving data");
+	}
 });
 
 //--------------------- POSTS-------------------------

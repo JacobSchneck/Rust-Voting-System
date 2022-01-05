@@ -17,11 +17,17 @@ const items = require('./routes/items');
 
 app.use("/users", users);
 app.use("/ballots", ballots);
-app.use("/items", items);
+// app.use("/items", items);
+
+const db = require('../db/index.js');
 
 //
-app.get("/", (req: any, res: any) => {
+app.get("/", (req, res) => {
 	res.send("Voting System Back End");
+});
+
+app.get("/test_db_connection", (req, res) => {
+	res.json(db.query("select * from users", []).rows);
 });
 
 module.exports = app.listen(PORT, () => {

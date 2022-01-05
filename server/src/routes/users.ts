@@ -1,36 +1,39 @@
 import express from 'express';
+import paginatedResults from '../utils/paginatedResults';
 const router = express.Router();
-import connectToDb from "../services/connectToDb";
-
-let db = connectToDb();
-
+const db = require('../../db/index.js');
 //--------------------- GETS -------------------------
 
 // get all users
-router.get('/', (req, res) => {
+router.get('/', async (req, res: any) => {
 	const sql = "SELECT * from users";
-	db.all(sql, [], (err: any, result: any) => {
-		if (err) throw err;
-		res.json(result);
-	});
+	try {
+		const { rows } = await db.query(sql, []);
+		res.json(rows);
+	} catch (e) {
+		console.log(e);
+		res.send("Error retrieving data")
+	}
 });
 
-// Get all users and ballots
-router.get('/ballots', (req, res) => {
+router.get('/ballots', async (req, res) => {
 	const sql = `SELECT 
 		users.username as username,
 		ballots.title as title,
 		ballots.id as ballot_id
 	FROM users
 	JOIN ballots on users.id = ballots.user_id`;
-	db.all(sql, [], (err: any, result: any) => {
-		if (err) throw err;
-		res.json(result);
-	});
+	try {
+		const { rows } = await db.query(sql, []);
+		res.json(rows);
+	} catch (e) {
+		console.log(e);
+		res.send("Error retrieving data")
+	}
 });
 
 // Get all ballots made by user
-router.get('/:user_id/ballots', (req, res) => {
+router.get('/:user_id/ballots', async (req, res) => {
 	const { user_id } = req.params;
 	const sql = `
 		SELECT 
@@ -39,16 +42,20 @@ router.get('/:user_id/ballots', (req, res) => {
 		FROM users
 		INNER JOIN ballots ON 
 			ballots.user_id = users.id
-		WHERE users.id = ?;
+		WHERE users.id = $1;
 	`;
-	db.all(sql, [user_id], (err: any, result: any) => {
-		if (err) throw err;
-		res.json(result);
-	});
+	try {
+		const { rows } = await db.query(sql, [user_id]);
+		res.json(rows);
+	} catch (e) {
+		console.log(e);
+		res.send("Error retrieving data")
+	}
 });
 
+
 // Get all items on a ballot 
-router.get('/:user_id/ballots/:ballot_id', (req, res) => {
+router.get('/:user_id/ballots/:ballot_id', async (req, res) => {
 	const { user_id, ballot_id } = req.params;
 	const sql = `
 		SELECT
@@ -58,17 +65,24 @@ router.get('/:user_id/ballots/:ballot_id', (req, res) => {
 		FROM items
 		INNER JOIN ballots ON  ballots.id = items.ballot_id
 		INNER JOIN users ON users.id = ballots.user_id
-		WHERE users.id = ? AND ballots.id = ?
-	`
-	db.all(sql, [user_id, ballot_id], (err: any, result: any) => {
-		if (err) throw err;
-		res.json(result);
-	});
+		WHERE users.id = $1 AND ballots.id = $2
+	`;
+	const query = {
+		name: "Get-All-Items-On-Ballot",
+		text: sql,
+		values: [user_id, ballot_id],
+	}
+	try {
+		const { rows } = await db.query(query);
+		res.json(rows);
+	} catch (e) {
+		console.log(`Error: ${e}`);
+		res.send("Error retrieving data");
+	}
 });
 
 // Tally the votes on a Ballot
-router.get('/:user_id/ballots/:ballot_id/votes', (req, res) => {
-	const { user_id, ballot_id } = req.params;
+router.get('/:user_id/ballots/:ballot_id/votes', async (req, res) => {
 	const sql = `
 		SELECT
 			users.username AS username,	
@@ -79,19 +93,23 @@ router.get('/:user_id/ballots/:ballot_id/votes', (req, res) => {
 		INNER JOIN items ON votes.item_id = items.id 
 		INNER JOIN ballots ON  ballots.id = items.ballot_id
 		INNER JOIN users ON users.id = ballots.user_id
-		WHERE users.id = ? AND ballots.id = ?
+		WHERE users.id = $1 AND ballots.id = $2
 		GROUP BY votes.item_id;
-	`
-	db.all(sql, [user_id, ballot_id], (err: any, result: any) => {
-		if (err) throw err;
-		res.json(result);
-	});
+	`;
+	const { user_id, ballot_id } = req.params;
+	try {
+		const { rows } = await db.query(sql, [user_id, ballot_id]);
+		res.json(rows);
+	} catch (e) {
+		console.log(`Error: ${e}`);
+		res.send("Error retrieving data");
+	}
 });
 
 // Get all users, ballots and the ballots items `
-router.get('/ballots/items', (req, res) => {
-
-	const sql = `SELECT 
+router.get('/ballots/items', async (req, res) => {
+	const sql = `
+	SELECT 
 		users.username as username,
 		ballots.title as title,
 		ballots.description as description,
@@ -100,44 +118,74 @@ router.get('/ballots/items', (req, res) => {
 	FROM users
 	JOIN ballots on users.id = ballots.user_id
 	JOIN items on ballots.id = items.ballot_id
+	ORDER BY ballots.id ASC;
 	--GROUP BY ballots.title;
-	`
-	;
+	`;
+	const { rows } = await db.query(sql, []);
 
 	const data: any[] = [];
-	db.all(sql, [], (err, rows) => {
-		if (err) throw err;
-
-
-		let prevBallotId = -1;
-		let ballotCard: any = {"items": []};
-		rows.forEach( row => {
-			if (prevBallotId != row.ballot_id) {
-				if (prevBallotId !== -1) {
-					data.push(ballotCard);
-				}
-				ballotCard = {"items": []};
-
-				// add row
-				ballotCard["ballotId"] = row.ballot_id;
-				ballotCard["title"] = row.title;
-				ballotCard["desription"] = row.description;
-				ballotCard["username"] = row.username;
-				ballotCard["items"].push(row.item);
-
-				prevBallotId = row.ballot_id;
-			} else {
-				ballotCard["ballotId"] = row.ballot_id;
-				ballotCard["title"] = row.title;
-				ballotCard["desription"] = row.description;
-				ballotCard["username"] = row.username;
-				ballotCard["items"].push(row.item);
-
-				prevBallotId = row.ballot_id;
+	let prevBallotId = -1;
+	let ballotCard: any = {"items": []};
+	rows.forEach((row: any) => {
+		if (prevBallotId != row.ballot_id) {
+			if (prevBallotId !== -1) {
+				data.push(ballotCard)
 			}
-		})
-		return res.json(data);
-	});
+			ballotCard = {"items": []}
+
+			ballotCard["ballotId"] = row.ballot_id;
+			ballotCard["title"] = row.title;
+			ballotCard["desription"] = row.description;
+			ballotCard["username"] = row.username;
+			ballotCard["items"].push(row.item);
+
+			prevBallotId = row.ballot_id;
+		} else {
+				ballotCard["ballotId"] = row.ballot_id;
+				ballotCard["title"] = row.title;
+				ballotCard["desription"] = row.description;
+				ballotCard["username"] = row.username;
+				ballotCard["items"].push(row.item);
+
+				prevBallotId = row.ballot_id;
+		}
+	})
+	res.json(data);
+
+	// const data: any[] = [];
+// 	db.all(sql, [], (err, rows) => {
+// 		if (err) throw err;
+
+
+// 		let prevBallotId = -1;
+// 		let ballotCard: any = {"items": []};
+// 		rows.forEach( row => {
+// 			if (prevBallotId != row.ballot_id) {
+// 				if (prevBallotId !== -1) {
+// 					data.push(ballotCard);
+// 				}
+// 				ballotCard = {"items": []};
+
+// 				// add row
+// 				ballotCard["ballotId"] = row.ballot_id;
+// 				ballotCard["title"] = row.title;
+// 				ballotCard["desription"] = row.description;
+// 				ballotCard["username"] = row.username;
+// 				ballotCard["items"].push(row.item);
+
+// 				prevBallotId = row.ballot_id;
+// 			} else {
+// 				ballotCard["ballotId"] = row.ballot_id;
+// 				ballotCard["title"] = row.title;
+// 				ballotCard["desription"] = row.description;
+// 				ballotCard["username"] = row.username;
+// 				ballotCard["items"].push(row.item);
+
+// 				prevBallotId = row.ballot_id;
+// 			}
+// 		})
+// 		return res.json(data);
+	// });
 });
 
 //--------------------- POSTS-------------------------
